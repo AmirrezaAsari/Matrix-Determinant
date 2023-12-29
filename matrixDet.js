@@ -17,13 +17,12 @@ function GaussianElimination(matrix) {
     const n = matrix.length;
 
     if (n !== matrix[0].length) {
-        throw new Error('Input matrix must be square (nxn)');
+        return undefined;
     }
 
     let det = 1;
 
     for (let i = 0; i < n; i++) {
-        // Find pivot
         let pivotRow = i;
         for (let j = i + 1; j < n; j++) {
             if (Math.abs(matrix[j][i]) > Math.abs(matrix[pivotRow][i])) {
@@ -31,21 +30,17 @@ function GaussianElimination(matrix) {
             }
         }
 
-        // Swap rows if necessary
         if (pivotRow !== i) {
             swapRows(matrix, i, pivotRow);
-            // Change sign because of row swap
             det *= -1;
         }
 
-        // If the pivot element is zero, the determinant is zero
         if (matrix[i][i] === 0) {
             return 0;
         }
 
         det *= matrix[i][i];
 
-        // Eliminate other elements below the pivot
         for (let j = i + 1; j < n; j++) {
             const factor = matrix[j][i] / matrix[i][i];
             for (let k = i; k < n; k++) {
@@ -57,9 +52,37 @@ function GaussianElimination(matrix) {
     return det;
 }
 
-// Example usage
-const filePath = '2.txt';
+
+function rowAndColumn(matrix) {
+    const n = matrix.length;
+
+    if (n !== matrix[0].length) {
+        return undefined;
+    }
+
+    if (n === 1) {
+        return matrix[0][0];
+    }
+
+    if (n === 2) {
+        return matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0];
+    }
+
+    let det = 0;
+
+    for (let i = 0; i < n; i++) {
+        const subMatrix = matrix.slice(1).map(row => row.filter((_, j) => j !== i));
+        const sign = i % 2 === 0 ? 1 : -1;
+        det += sign * matrix[0][i] * determinant(subMatrix);
+    }
+
+    return det;
+}
+
+const filePath = 'undefined.txt';
 
 const matrix = parseMatrixFromFile(filePath);
-const det = Math.floor(GaussianElimination(matrix));
-console.log(`Gaussian Elimination : ${det}`);
+const detGaussian = GaussianElimination(matrix);
+const detRowCol = rowAndColumn(matrix);
+console.log(`Gaussian Elimination : ${detGaussian}`);
+console.log(`row and column : ${detRowCol}`);
