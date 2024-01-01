@@ -49,7 +49,7 @@ function GaussianElimination(matrix) {
         }
     }
 
-    return det;
+    return Math.floor(det);
 }
 
 
@@ -61,11 +61,11 @@ function rowAndColumn(matrix) {
     }
 
     if (n === 1) {
-        return matrix[0][0];
+        return Math.floor(matrix[0][0]);
     }
 
     if (n === 2) {
-        return matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0];
+        return Math.floor(matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0]);
     }
 
     let det = 0;
@@ -75,37 +75,36 @@ function rowAndColumn(matrix) {
         const sign = i % 2 === 0 ? 1 : -1;
         det += sign * matrix[0][i] * rowAndColumn(subMatrix);
     }
-    return det;
+    return Math.floor(det);
 }
 
-function rezaieFar(matrix){
+function rezaieFar(matrix) {
     const n = matrix.length;
-
-    if (n !== matrix[0].length) {
-        return undefined;
-    }
-
     if (n === 1) {
-        return matrix[0][0];
+        return Math.floor(matrix[0][0]);
     }
-
     else if (n === 2) {
-        return matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0];
+        return Math.floor(matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0]);
     }
+    else {
+        const mat1 = matrix.slice(1, n).map(row => row.slice(1));
+        const mat2 = matrix.slice(1, n).map(row => row.slice(0, -1));
+        const mat3 = matrix.slice(0, -1).map(row => row.slice(1));
+        const mat4 = matrix.slice(0, -1).map(row => row.slice(0, -1));
+        const denominator = matrix.slice(1, -1).map(row => row.slice(1, -1));
+        const numerator = [
+            [rezaieFar(mat1), rezaieFar(mat2)],
+            [rezaieFar(mat3), rezaieFar(mat4)],
+        ];
+  
+        const det = rezaieFar(denominator);
 
-
-    let A = matrix.slice(1).map(row => row.filter((_, j) => j !== 0));
-    let B = matrix.slice(1).map(row => row.filter((_, j) => j !== n));
-    let C = matrix.slice(n).map(row => row.filter((_, j) => j !== 0));
-    let D = matrix.slice(n).map(row => row.filter((_, j) => j !== n));
-    let Etemp = matrix.slice(1).map(row => row.filter((_, j) => j !== 0));
-    let E = Etemp.slice(n-1).map(row => row.filter((_, j) => j !== n-1));
-    
-    let det = ((rezaieFar(A) * rezaieFar(D)) - (rezaieFar(B) * rezaieFar(C))) / rezaieFar(E);
-    
+        return Math.floor((numerator[0][0] * numerator[1][1] - numerator[0][1] * numerator[1][0]) / det);
+    }
 }
 
-const filePath = '0.txt';
+
+const filePath = 'test.txt';
 
 const matrix = parseMatrixFromFile(filePath);
 const detGaussian = GaussianElimination(matrix);
