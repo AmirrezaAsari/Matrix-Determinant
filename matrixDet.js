@@ -13,6 +13,9 @@ function swapRows(matrix, i, j) {
     matrix[j] = temp;
 }
 
+
+// O(n^3)
+
 function GaussianElimination(matrix) {
     const n = matrix.length;
 
@@ -53,6 +56,8 @@ function GaussianElimination(matrix) {
 }
 
 
+//O(n!)
+
 function rowAndColumn(matrix) {
     const n = matrix.length;
 
@@ -77,6 +82,9 @@ function rowAndColumn(matrix) {
     }
     return Math.floor(det);
 }
+
+
+// O(2^n)
 
 function rezaieFar(matrix) {
     const n = matrix.length;
